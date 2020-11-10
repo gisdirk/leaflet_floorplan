@@ -20,29 +20,54 @@
 </head>
 <body>
   <div id="map"></div>
-  <script src="floorplan.js"`></script>
+  <script src="floorplan.js"></script>
+  <script src="poi.js"></script>
   <script>
-  var mymap = L.map('map').setView([41.86625, -87.61694], 16);
-  L.tileLayer('https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token={accessToken}', {
-    maxZoom: 18,
-    id: 'mapbox/streets-v11',
-    tileSize: 512,
-    zoomOffset: -1,
-    accessToken: 'pk.eyJ1IjoiZWxla3Ryb2RpcmsiLCJhIjoiY2tkYTNnanEyMzE1NjJycXZuMnQyaHBlZSJ9.2aOI2VT-S8wNuBvTJfieCQ'
-}).addTo(mymap);
+  var mapboxURL = 'https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token=pk.eyJ1IjoiZWxla3Ryb2RpcmsiLCJhIjoiY2tkYTNnanEyMzE1NjJycXZuMnQyaHBlZSJ9.2aOI2VT-S8wNuBvTJfieCQ';
+
+  var grayscale = L.tileLayer(mapboxURL, {
+    id: 'mapbox/light-v10', tileSize: 512, zoomOffset: -1}),
+    streets   = L.tileLayer(mapboxURL, {
+      id: 'mapbox/streets-v11', tileSize: 512, zoomOffset: -1});
 
 
-L.geoJSON(floorplan, {
-  style: function (feature) {
-    return {
-      color:feature.properties.color,
-      opacity:0.8,
-      fillOpacity:0.5};
-  },
-    }).addTo(mymap);
+      var polygon = L.geoJSON(floorplan, {
+        style: function (feature) {
+          return {
+            color:feature.properties.color,
+            opacity:0.8,
+            fillOpacity:0.5};
+        },
+          });
+      var points = L.geoJSON(poi, {
+        pointToLayer : function(feature, latlng) {
+          return L.circleMarker(latlng, {
+color: 'blue',
+weight: 2,
+fillColor: 'orange',
+fillOpacity: 1,
+radius: 10
+      });
+      }
+    });
 
+      var map = L.map('map', {
+        center: [41.86625, -87.61694],
+        zoom: 16,
+        layers: [grayscale, polygon, points]
+      });
 
+      var baseLayers = {
+        "Grayscale": grayscale,
+        "Streets": streets
+      };
 
+      var overlays = {
+        "Floorplan": polygon,
+        "Points": points
+      };
+
+    L.control.layers(baseLayers, overlays,{collapsed: false}).addTo(map);
   </script>
 </body>
 </html>
