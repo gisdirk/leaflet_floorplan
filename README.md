@@ -3,7 +3,7 @@ https://gisdirk.github.io/leaflet_floorplan/
 - sub-branches include both embedded & external geosjon
 - Style for polygon is driven by the attribute 'color'
 
-# Tutorial that were used:
+<h1> Tutorial that were used: </h1>
 https://leafletjs.com/examples/geojson/ <br>
 https://leafletjs.com/examples/layers-control/ <br>
 https://github.com/DevinLeeBartley/map672/blob/master/module-08/lesson-08.md
